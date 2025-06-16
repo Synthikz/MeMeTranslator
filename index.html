@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>"MeMe" Translator with Alphabet</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Base styles and font configuration */
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      /* Subtle fade-in animation for elements */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      /* Style for textarea placeholder */
+      textarea::placeholder {
+        color: #6b7280; /* gray-500 */
+      }
+      /* Style for the speak button when active */
+      .speaking {
+        color: #f59e0b; /* amber-500 */
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+      }
+      
+      /* --- Custom scrollbar styles --- */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1f2937; /* gray-800 */
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #f59e0b; /* amber-500 */
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #fbbf24; /* amber-400 */
+      }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Main translator container -->
+    <main class="w-full max-w-2xl bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-black/30 p-6 md:p-8 space-y-4 fade-in">
+        
+        <!-- Header -->
+        <div class="text-center mb-2">
+            <h1 class="text-3xl md:text-4xl font-bold text-amber-400">"MeMe" Translator</h1>
+            <p class="text-gray-400 mt-2">The essence of the "MeMe" language.</p>
+        </div>
+        
+        <!-- Button to view the alphabet -->
+        <div class="text-center mb-4">
+            <button id="viewAlphabetBtn" class="text-amber-400 hover:text-amber-300 font-semibold py-1 px-3 rounded-lg transition-colors hover:bg-white/10">
+                View Alphabet
+            </button>
+        </div>
+
+
+        <!-- Input Area -->
+        <div class="space-y-2">
+            <div class="flex justify-between items-center">
+                <label id="inputLabel" for="inputText" class="font-semibold text-gray-300">Your Text</label>
+                <button id="clearBtn" title="Clear text" class="text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <textarea 
+                id="inputText" 
+                rows="5" 
+                placeholder="Type something here..." 
+                class="w-full p-4 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all duration-300 resize-none text-lg"
+            ></textarea>
+        </div>
+
+        <!-- Swap Button -->
+        <div class="flex justify-center py-2">
+            <button id="swapBtn" title="Swap translation" class="p-2 bg-gray-700 hover:bg-amber-500 hover:text-gray-900 rounded-full transition-all duration-300 transform hover:rotate-180">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </button>
+        </div>
+
+        <!-- Output Area -->
+        <div class="space-y-2">
+            <div class="flex justify-between items-center">
+                 <label id="outputLabel" for="output" class="font-semibold text-gray-300">"MeMe" Translation</label>
+                 <div class="flex items-center gap-2">
+                    <button id="speakBtn" title="Listen to translation" class="p-2 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-full text-sm font-medium transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </button>
+                    <button id="copyBtn" class="flex items-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-md text-sm font-medium transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span id="copyBtnText">Copy</span>
+                    </button>
+                 </div>
+            </div>
+            <div 
+                id="output" 
+                aria-live="polite" 
+                class="w-full p-4 bg-gray-900 border border-gray-700 rounded-lg min-h-[140px] whitespace-pre-wrap text-lg text-gray-300"
+            ></div>
+        </div>
+    </main>
+
+    <!-- Alphabet Modal (hidden by default) -->
+    <div id="alphabetModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-gray-800 w-full max-w-md max-h-[80vh] overflow-y-auto rounded-xl shadow-lg p-6 custom-scrollbar">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-amber-400">"MeMe" Alphabet</h2>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
+            </div>
+            <div id="alphabetList" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-lg">
+                <!-- Content will be generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-8 text-gray-500 text-sm">
+        <p>Created by Synthikz</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const abecedarioMe = {
+                'a': 'me', 'b': 'meme', 'c': 'me me', 'd': 'me meme',
+                'e': 'meme me', 'f': 'meme meme', 'g': 'me me me', 'h': 'me me meme',
+                'i': 'me meme me', 'j': 'me meme meme', 'k': 'meme me me', 'l': 'meme me meme',
+                'm': 'meme meme me', 'n': 'meme meme meme', 'o': 'me me me me', 'p': 'me me me meme',
+                'q': 'me me meme me', 'r': 'me me meme meme', 's': 'me meme me me', 't': 'me meme me meme',
+                'u': 'meme me me me', 'v': 'meme me meme meme', 'w': 'meme meme me me', 'x': 'meme meme me meme',
+                'y': 'me me me me me', 'z': 'me me me me meme'
+            };
+
+            const memeAbecedario = Object.fromEntries(
+                Object.entries(abecedarioMe).map(([key, value]) => [value, key])
+            );
+            
+            // DOM Element Selection
+            const input = document.getElementById("inputText");
+            const output = document.getElementById("output");
+            const copyBtn = document.getElementById("copyBtn");
+            const copyBtnText = document.getElementById("copyBtnText");
+            const clearBtn = document.getElementById("clearBtn");
+            const swapBtn = document.getElementById("swapBtn");
+            const speakBtn = document.getElementById("speakBtn");
+            const inputLabel = document.getElementById("inputLabel");
+            const outputLabel = document.getElementById("outputLabel");
+            const viewAlphabetBtn = document.getElementById("viewAlphabetBtn");
+            const alphabetModal = document.getElementById("alphabetModal");
+            const closeModalBtn = document.getElementById("closeModalBtn");
+            const alphabetList = document.getElementById("alphabetList");
+
+            let isDirectTranslation = true;
+            const synth = window.speechSynthesis;
+            if (!synth) { speakBtn.style.display = 'none'; }
+
+            // --- Modal Logic ---
+            const showModal = () => alphabetModal.classList.remove('hidden');
+            const hideModal = () => alphabetModal.classList.add('hidden');
+            
+            viewAlphabetBtn.addEventListener('click', showModal);
+            closeModalBtn.addEventListener('click', hideModal);
+            alphabetModal.addEventListener('click', (event) => {
+                if (event.target === alphabetModal) {
+                    hideModal();
+                }
+            });
+
+            // Function to populate the alphabet list in the modal
+            const populateAlphabetList = () => {
+                let content = "";
+                for (const [letter, translation] of Object.entries(abecedarioMe)) {
+                    content += `<div class="flex justify-between"><strong class="text-amber-400">${letter.toUpperCase()}:</strong> <span>${translation}</span></div>`;
+                }
+                alphabetList.innerHTML = content;
+            };
+
+            // --- Translation Logic ---
+            const directTranslate = (text) => {
+                let resultado = "";
+                for (const char of text) {
+                    const lowerChar = char.toLowerCase();
+                    if (abecedarioMe[lowerChar]) {
+                        resultado += abecedarioMe[lowerChar] + "  ";
+                    } else if (char === " ") {
+                        resultado += "\n"; 
+                    } else if (char === "\n") {
+                        resultado += "\n\n";
+                    } else {
+                        resultado += char;
+                    }
+                }
+                return resultado.trim();
+            };
+
+            const reverseTranslate = (memeText) => {
+                const memeWords = memeText.split('\n');
+                return memeWords.map(word => 
+                    word.trim().split('  ').map(letter => 
+                        memeAbecedario[letter.trim()] || letter.trim()
+                    ).join('')
+                ).join(' ');
+            };
+            
+            const handleTranslation = () => {
+                output.textContent = isDirectTranslation ? directTranslate(input.value) : reverseTranslate(input.value);
+            };
+
+            const swapTranslation = () => {
+                synth.cancel();
+                isDirectTranslation = !isDirectTranslation;
+                [input.value, output.textContent] = [output.textContent, input.value];
+                if (isDirectTranslation) {
+                    inputLabel.textContent = 'Your Text';
+                    outputLabel.textContent = '"MeMe" Translation';
+                    input.placeholder = 'Type something here...';
+                } else {
+                    inputLabel.textContent = '"MeMe" Text';
+                    outputLabel.textContent = 'Text Translation';
+                    input.placeholder = 'Paste a "MeMe" text here...';
+                }
+                input.focus();
+            };
+
+            // --- Event Listeners ---
+            input.addEventListener("input", handleTranslation);
+            swapBtn.addEventListener("click", swapTranslation);
+            clearBtn.addEventListener("click", () => {
+                synth.cancel();
+                input.value = "";
+                output.textContent = "";
+                input.focus();
+            });
+
+            copyBtn.addEventListener("click", () => {
+                if (!output.textContent) return;
+                const textarea = document.createElement('textarea');
+                textarea.value = output.textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    copyBtnText.textContent = 'Copied!';
+                    copyBtn.classList.add('bg-green-600');
+                    setTimeout(() => {
+                        copyBtnText.textContent = 'Copy';
+                        copyBtn.classList.remove('bg-green-600');
+                    }, 2000);
+                } catch (err) { console.error('Error copying text: ', err); }
+                document.body.removeChild(textarea);
+            });
+            
+            speakBtn.addEventListener('click', () => {
+                if (!synth || !output.textContent) return;
+                if (synth.speaking) { synth.cancel(); return; }
+                const textToSpeak = output.textContent.replace(/meme/g, 'me-me').replace(/\n/g, '. ');
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'en-US'; // Use English voice
+                utterance.rate = 1.1;
+                utterance.pitch = 1.3;
+                utterance.onstart = () => speakBtn.classList.add('speaking');
+                utterance.onend = () => speakBtn.classList.remove('speaking');
+                utterance.onerror = (e) => { console.error('Speech synthesis error:', e); speakBtn.classList.remove('speaking'); };
+                synth.speak(utterance);
+            });
+            
+            // Initialize the app
+            handleTranslation();
+            populateAlphabetList();
+        });
+    </script>
+</body>
+</html>
